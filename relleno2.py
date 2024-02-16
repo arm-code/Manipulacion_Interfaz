@@ -2,21 +2,35 @@ import openpyxl
 import pyautogui
 import time
 
+portada = """
+ __________________________________
+|              ____                |
+|   ________  / / /__  ____  ____  |
+|  / ___/ _ \/ / / _ \/ __ \/ __ \ |
+| / /  /  __/ / /  __/ / / / /_/ / |
+|/_/   \___/_/_/\___/_/ /_/\____/  |
+|                                  |
+|  by: arm-code (GPL License)      |
+|__________________________________|
+"""
+
+
+print(portada)
 # MATERIAS PARA EL PLAN 22, VAN DESDE LA MATERIA 01 HASTA LA 26 (DE LA 21 SE SALTA A LA 26)
 number_asignatura = ['01', '02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','26']
 
 # DEBEMOS CAMBIAR LA ETAPA, FASE Y EL PLAN
-name_asignatura = '2401B22'
+name_asignatura = '24XXXXX'
 
 # DEBEMOS COLOCAR EL NOMBRE DE ARCHIVO QUE CONTIENE LAS PLANTILLAS
-excel = '2401-B.xlsx'
+excel = '2402-A.xlsx'
 workbook = openpyxl.load_workbook(excel, data_only=True)
 
-print("COLOQUE EL CURSOR EN LA PANTALLA DE CAPTURA DE LAS PLANTILLAS")
-print('EN EL ESPACIO DE LA ASIGNATURA')
-time.sleep(5)
+print("COLOQUE EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.")
+print('(EN EL ESPACIO DE LA ASIGNATURA)')
 
-print('ESPERE MIENTRAS SE CARGAN LOS DATOS...')
+print('\nLEYENDO LOS DATOS DEL EXCEL...')
+time.sleep(5)
 
 n = 0
 
@@ -27,7 +41,8 @@ for sheet_name in workbook.sheetnames:
     num_cols = sheet.max_column
     num_rows = sheet.max_row
 
-    print(f'\nPlantilla: {sheet_name}')
+    print('\nLOS SIGUIENTES DATOS SERAN GUARDADOS:')
+    print(f'Plantilla: materia {sheet_name}')    
 
     # Definir el rango de columnas desde B hasta AE
     columnas_a_leer = list(sheet.iter_cols(min_col=2, max_col=31, min_row=1, max_row=2))
@@ -43,6 +58,7 @@ for sheet_name in workbook.sheetnames:
 
         # Imprimir los datos de la fila actual
         print(data_to_enter)
+        print('\nINGRESANDO LOS DATOS EN EL SIOSAD...')
         # se deben verificar las coordenadas del click, de lo contrario se va ir a otro lado la captura
         pyautogui.click(x=150, y=150)
 
@@ -67,17 +83,6 @@ for sheet_name in workbook.sheetnames:
         # PARA MATERIAS DE 30 PREGUNTAS USAMOS [17,19,21,24,27]
         # PARA MATERIAS DE 40 PREGUNTAS USAMOS [23,27,31,34,37]
 
-        # pyautogui.write('17')   # NORMA 1
-        # pyautogui.press('tab')  
-        # pyautogui.write('19')   # NORMA 2
-        # pyautogui.press('tab')  
-        # pyautogui.write('21')   # NORMA 3
-        # pyautogui.press('tab')
-        # pyautogui.write('24')   # NORMA 4
-        # pyautogui.press('tab')
-        # pyautogui.write('27')   # NORMA 5
-        # pyautogui.press('tab')
-
         pyautogui.write('16')   # NORMA 1
         pyautogui.press('tab')  
         pyautogui.write('18')   # NORMA 2
@@ -98,17 +103,21 @@ for sheet_name in workbook.sheetnames:
             else:
                 pyautogui.write(data_to_enter[i-1])
         
-        input('REVISE CUIDADOSAMENTE LA CAPTURA \nPRESIONE ENTER PARA CONTINUAR...')
+        input('\nREVISE CUIDADOSAMENTE LA CAPTURA \nPRESIONE ENTER PARA CONTINUAR...\n>')
+        print('enter')
+        print('EN SEGUIDA VUELVA A COLOCAR EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.')        
         time.sleep(3)
 
         # GUARDAR PLANTILLA
         pyautogui.press('f2')
         pyautogui.press('enter')
         pyautogui.press('enter')
-        print('CAPTURA EXITOSA!\n')  
+        print('\nCAPTURA EXITOSA!\n')  
         n = n + 1
-        print('SIGUIENTE MATERIA = ', number_asignatura[n])
-        print("\t****************")
-        input('\tDESEA SALIR? \n\t-PRESIONE CTRL + C \n\tAGREGAR SIG MATERIA? \n\t-PRESIONE ENTER\n')
+        print('SIGUIENTE MATERIA: ', number_asignatura[n])
+        print("|--------------------------|")
+        input('|PARA DETENER EL PROGRAMA: |\n\t|->PRESIONE CTRL + C       |\n\t|PARA AGREGAR SIG MATERIA? |\n\t|->PRESIONE ENTER          |\n\t>')
+        
+        print('enter')
         time.sleep(5)
     workbook.close()
