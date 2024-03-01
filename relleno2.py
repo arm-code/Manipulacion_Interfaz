@@ -20,10 +20,10 @@ print(portada)
 number_asignatura = ['01', '02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','26']
 
 # DEBEMOS CAMBIAR LA ETAPA, FASE Y EL PLAN
-name_asignatura = '24XXXXX'
+name_asignatura = '2402B22'
 
 # DEBEMOS COLOCAR EL NOMBRE DE ARCHIVO QUE CONTIENE LAS PLANTILLAS
-excel = '2402-A.xlsx'
+excel = '2402-B.xlsx'
 workbook = openpyxl.load_workbook(excel, data_only=True)
 
 print("COLOQUE EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.")
@@ -114,8 +114,8 @@ for sheet_name in workbook.sheetnames:
         pyautogui.press('enter')
         print('\nCAPTURA EXITOSA!\n')  
         n = n + 1
-        print('SIGUIENTE MATERIA: ', number_asignatura[n])
-        print("|--------------------------|")
+        print('\tSIGUIENTE MATERIA: ', number_asignatura[n])
+        print("\t|--------------------------|")
         input('|PARA DETENER EL PROGRAMA: |\n\t|->PRESIONE CTRL + C       |\n\t|PARA AGREGAR SIG MATERIA? |\n\t|->PRESIONE ENTER          |\n\t>')
         
         print('enter')
