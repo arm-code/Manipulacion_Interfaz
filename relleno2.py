@@ -20,10 +20,10 @@ print(portada)
 number_asignatura = ['01', '02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','26']
 
 # DEBEMOS CAMBIAR LA ETAPA, FASE Y EL PLAN
-name_asignatura = '2402B22'
+name_asignatura = '2403A22'
 
 # DEBEMOS COLOCAR EL NOMBRE DE ARCHIVO QUE CONTIENE LAS PLANTILLAS
-excel = '2402-B.xlsx'
+excel = '2403-A.xlsx'
 workbook = openpyxl.load_workbook(excel, data_only=True)
 
 print("COLOQUE EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.")
@@ -57,7 +57,12 @@ for sheet_name in workbook.sheetnames:
             data_to_enter.append(str(cell_value))
 
         # Imprimir los datos de la fila actual
-        print(data_to_enter)
+        #print(data_to_enter)
+        for i in range(len(data_to_enter)):
+            if (i+1) % 5 == 0:
+                print('|',data_to_enter[i], '|')
+            else:
+                print('|',data_to_enter[i], end=' ')
         print('\nINGRESANDO LOS DATOS EN EL SIOSAD...')
         # se deben verificar las coordenadas del click, de lo contrario se va ir a otro lado la captura
         pyautogui.click(x=150, y=150)
@@ -112,12 +117,15 @@ for sheet_name in workbook.sheetnames:
         pyautogui.press('f2')
         pyautogui.press('enter')
         pyautogui.press('enter')
-        print('\nCAPTURA EXITOSA!\n')  
-        n = n + 1
-        print('\tSIGUIENTE MATERIA: ', number_asignatura[n])
-        print("\t|--------------------------|")
-        input('|PARA DETENER EL PROGRAMA: |\n\t|->PRESIONE CTRL + C       |\n\t|PARA AGREGAR SIG MATERIA? |\n\t|->PRESIONE ENTER          |\n\t>')
-        
-        print('enter')
-        time.sleep(5)
+        print('\nCAPTURA EXITOSA!\n')
+        try:  
+            n = n + 1
+            print('\tSIGUIENTE MATERIA: ', number_asignatura[n])
+            print("\t|--------------------------|")
+            input('\t|PARA DETENER EL PROGRAMA: |\n\t|->PRESIONE CTRL + C       |\n\t|PARA AGREGAR SIG MATERIA? |\n\t|->PRESIONE ENTER          |\n\t>')
+            
+            print('enter')
+            time.sleep(5)
+        except:
+            print('Al parecer se ha terminado de leer el EXCEL.')
     workbook.close()
