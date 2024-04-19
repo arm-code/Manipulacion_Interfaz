@@ -1,8 +1,9 @@
+import time
 import openpyxl
 import pyautogui
-import time
 
-portada = """
+PORTADA = """
+
  __________________________________
 |              ____                |
 |   ________  / / /__  ____  ____  |
@@ -15,30 +16,52 @@ portada = """
 """
 
 
-print(portada)
-# MATERIAS PARA EL PLAN 22, VAN DESDE LA MATERIA 01 HASTA LA 26 (DE LA 21 SE SALTA A LA 26)
-number_asignatura = ['01', '02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','26']
-
+print(PORTADA)
 
 print('Bienvenido al programa para cargar las plantillas en el SIOSAD.')
 
-# DEBEMOS CAMBIAR LA ETAPA, FASE Y EL PLAN
-etapa =  input('Ingrese la etapa y fase: ')
-plan = input('Ingrese el plan: ')
-name_asignatura = etapa + plan
+option = 0
+etapa = ''
+fase = ''
+plan = ''
+name_asignatura = ''
+excel = ''
+normaCalificacion3340 = [23, 27, 31, 34, 37]  # para 40 preguntas del plan 33
+# para plan 22 y 33 de 30 preguntas
+normaCalificacion2233 = [17, 19, 21, 24, 27]
+# Para plan 22 y 33 de 30 preguntas (2024)
+normaCalificacion2233_2024 = [16, 18, 20, 23, 26]
 
+while option != 1:
+    etapa = input('Ingrese la etapa: ')
+    fase = input('Ingrese la fase: ')
+    plan = input('Ingrese el plan: ')
+    name_asignatura = etapa + plan
 
-# DEBEMOS COLOCAR EL NOMBRE DE ARCHIVO QUE CONTIENE LAS PLANTILLAS
-name_file = input('Ingrese el nombre del archivo de excel: ')
-excel = name_file+'.xlsx'
+    if plan == '33':
+        print(
+            'Las asignaturas de 40 preguntas tendra que meter manualmente las ultimas 10.')
+        print('Aun no se implementa esa funcionalidad... :(')
 
-#intentamos abrir el archivo con el nombre del excel proporcionado
+    # DEBEMOS COLOCAR EL NOMBRE DE ARCHIVO QUE CONTIENE LAS PLANTILLAS
+    name_file = input('Ingrese el nombre del archivo de excel: ')
+    excel = name_file+'.xlsx'
+
+    print('\n\t| Usted ha ingresado los sig. datos:')
+    print(f'\t| Etapa:    { etapa } ')
+    print(f'\t| Fase:     { fase }  ')
+    print(f'\t| Plan:     { plan }  ')
+    print(f'\t| Excel:    { excel } ')
+    OPTION = int(input(
+        '\t| Ingrese [0] y presione enter pa corregir los datos. \n\t| Ingrese [1] y presione enter para continuar         \n\t=> '))
+
+# intentamos abrir el archivo con el nombre del excel proporcionado
+print('Se esta leyendo el archivo de excel...')
+
 try:
     workbook = openpyxl.load_workbook(excel, data_only=True)
-    print("COLOQUE EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.")
-    print('(EN EL ESPACIO DE LA ASIGNATURA)')
-
-    print('\nCARGANDO LOS DATOS DEL EXCEL...')
+    print("[Coloque el cursor en la ventana del SIOSAD]")
+    print('[en es el espacio de la asignatura]')
     time.sleep(2)
 
     n = 0
@@ -46,15 +69,15 @@ try:
     # Iterar sobre cada hoja del libro
     for sheet_name in workbook.sheetnames:
         sheet = workbook[sheet_name]
-        
         num_cols = sheet.max_column
         num_rows = sheet.max_row
 
-        print('\nLOS SIGUIENTES DATOS SERAN GUARDADOS:')
-        print(f'Plantilla Materia #{sheet_name}')    
+        print('\nLos siguientes datos han sido leidos del archivo:')
+        print(f'Reactivos de la asignatura: #{sheet_name}')
 
         # Definir el rango de columnas desde B hasta AE
-        columnas_a_leer = list(sheet.iter_cols(min_col=2, max_col=31, min_row=1, max_row=2))
+        columnas_a_leer = list(sheet.iter_cols(
+            min_col=2, max_col=31, min_row=1, max_row=2))
 
         # Iterar sobre cada fila de la hoja
         for row_index in range(2, 3):  # Solo filas 1 y 2
@@ -66,61 +89,57 @@ try:
                 data_to_enter.append(str(cell_value))
 
             # Imprimir los datos de la fila actual
-            #print(data_to_enter)
+            # print(data_to_enter)
             for i in range(len(data_to_enter)):
                 if (i+1) % 5 == 0:
-                    print('|',data_to_enter[i], '|')
+                    print('|', data_to_enter[i], '|')
                 else:
-                    print('|',data_to_enter[i], end=' ')
+                    print('|', data_to_enter[i], end=' ')
             print('\nINGRESANDO LOS DATOS EN EL SIOSAD...')
-            input('STOP')
+            time.sleep(2)
             # se deben verificar las coordenadas del click, de lo contrario se va ir a otro lado la captura
             pyautogui.click(x=150, y=150)
 
             # NUMERO DE ASIGNATURA
-            pyautogui.write(number_asignatura[n])
+            # pyautogui.write(number_asignatura[n])
+            pyautogui.write(sheet_name)
             pyautogui.press('tab')
 
             # CLAVE DE PLANTILLA
-            pyautogui.write(number_asignatura[n] + name_asignatura)
+            pyautogui.write(sheet_name + name_asignatura)
             pyautogui.press('tab')
 
             # NUMERO DE RESPUESTAS
             pyautogui.write('30')
             pyautogui.press('tab')
 
-            #BASE DE CODIFICACION
+            # BASE DE CODIFICACION
             pyautogui.write('1')
             pyautogui.press('tab')
-            
-            # NORMAS DE CODIFICACION
-            # LAS NORMAS DE CODIFICACION VARIAN PARA MATERIAS DE 30 Y 40 PREGUNTAS.
-            # PARA MATERIAS DE 30 PREGUNTAS USAMOS [17,19,21,24,27]
-            # PARA MATERIAS DE 40 PREGUNTAS USAMOS [23,27,31,34,37]
 
-            pyautogui.write('16')   # NORMA 1
-            pyautogui.press('tab')  
-            pyautogui.write('18')   # NORMA 2
-            pyautogui.press('tab')  
-            pyautogui.write('20')   # NORMA 3
-            pyautogui.press('tab')
-            pyautogui.write('23')   # NORMA 4
-            pyautogui.press('tab')
-            pyautogui.write('26')   # NORMA 5
-            pyautogui.press('tab')
+            # NORMAS DE Calificacion
+            try:
+                for i in range(len(normaCalificacion2233_2024)):
+                    pyautogui.write(str(normaCalificacion2233_2024[i]))
+                    pyautogui.press('tab')
 
-            # RESPUESTAS
-            for i in range(1,31):
-                if i % 5 == 0 :
+            except NameError:
+                print('error al ingresar las normas')
+
+            # Ingresando reactivos al SIOSAD
+            for i in range(1, 31):
+                if i % 5 == 0:
                     pyautogui.write(data_to_enter[i-1])
                     pyautogui.press('tab')
-                    
+
                 else:
                     pyautogui.write(data_to_enter[i-1])
-            
-            input('\nREVISE CUIDADOSAMENTE LA CAPTURA \nPRESIONE ENTER PARA CONTINUAR...\n>')
+
+            input(
+                '\nREVISE CUIDADOSAMENTE LA CAPTURA \nPRESIONE ENTER PARA CONTINUAR...\n>')
             print('enter')
-            print('EN SEGUIDA VUELVA A COLOCAR EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.')        
+            print(
+                'EN SEGUIDA VUELVA A COLOCAR EL CURSOR EN LA VENTANA DEL SIOSAD PLANTILLAS.')
             time.sleep(2)
 
             # GUARDAR PLANTILLA
@@ -128,17 +147,17 @@ try:
             pyautogui.press('enter')
             pyautogui.press('enter')
             print('\nCAPTURA EXITOSA!\n')
-            try:  
+            try:
                 n = n + 1
-                print('\tSIGUIENTE MATERIA: ', number_asignatura[n])
-                print("\t|--------------------------|")
-                input('\t|PARA DETENER EL PROGRAMA: |\n\t|->  PRESIONE CTRL + C     |\n\t|PARA AGREGAR SIG MATERIA? |\n\t|->  PRESIONE ENTER        |\n\t>')
-                
+                print('\t| Siguiente asignatura: ')
+                input(
+                    '\t| PARA DETENER EL PROGRAMA:   [PRESIONE CTRL + C]\n\t| PARA AGREGAR SIG MATERIA:   [PRESIONE ENTER] \n\t=>')
+
                 print('enter')
-                time.sleep(5)
-            except:
+                time.sleep(2)
+            except TypeError:
                 print('Al parecer se ha terminado de leer el EXCEL.')
         workbook.close()
-except:
+except RuntimeError:
     print('Error al intentar abrir el archivo!!')
-
+    print('Vuelva a ejecutar el programa!')
